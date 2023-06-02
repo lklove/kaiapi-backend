@@ -1,0 +1,46 @@
+server:
+  port: 8090
+spring:
+  application:
+    name: kaiapi-gateway
+  cloud:
+    gateway:
+      enabled: true
+      discovery:
+        locator:
+          lower-case-service-id: true
+      routes:
+        - id: apiInterface
+          uri: lb://kaiapi-interface
+          predicates:
+            - Path=/interface/**
+        - id: thirdParty
+          uri: lb://kaiapi-third-part
+          predicates:
+            - Path=/api/alipay/**
+        - id: apiOrder
+          uri: lb://api-order
+          predicates:
+            - Path=/api/order/**
+        - id: api
+          uri: lb://kaiapi-backend
+          predicates:
+            - Path=/api/**
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: trace
+dubbo:
+  application:
+    name: dubbo-springboot-demo-provider
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    id: nacos-registry
+    address: nacos://localhost:8848

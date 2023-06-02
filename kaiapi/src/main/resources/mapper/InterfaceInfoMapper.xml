@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.edkai.project.mapper.InterfaceInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.edkai.common.model.entity.InterfaceInfo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="requestParams" column="requestParams" jdbcType="VARCHAR"/>
+        <result property="requestHeader" column="requestHeader" jdbcType="VARCHAR"/>
+        <result property="responseHeader" column="responseHeader" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="method" column="method" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="BIGINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isFree" column="isFree" jdbcType="TINYINT"/>
+        <result property="charging" column="charging" jdbcType="DECIMAL"/>
+        <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,name,description,
+        url,requestHeader,responseHeader,
+        status,method,userId,requestParams,charging,isFree
+        createTime,updateTime,isDelete
+    </sql>
+    <select id="selectAllPage" resultType="com.edkai.project.model.vo.ManageInterfaceVo">
+        SELECT ii.`id`,
+        ii.`name`,
+        ii.`description`,
+        ii.`method`,
+        ii.`requestHeader`,
+        ii.`requestParams`,
+        ii.`responseHeader`,
+        ii.`url`,
+        ii.`isFree`,
+        ii.`status`,
+        ii.`createTime`,
+        ii.`updateTime`,
+        ii.`charging`
+        FROM interface_info ii
+        <where>
+            ii.isDelete=0
+            <if test="queryRequest.name!=null and queryRequest.name != ''">
+                and ii.name=#{queryRequest.name}
+            </if>
+            <if test="queryRequest.description!=null and queryRequest.description != ''">
+                and ii.description like CONCAT('%',#{queryRequest.description},'%')
+            </if>
+            <if test="queryRequest.method!=null and queryRequest.method != ''">
+                and ii.method=#{queryRequest.method}
+            </if>
+        </where>
+        ORDER BY ii.`isFree` ASC
+    </select>
+
+
+</mapper>

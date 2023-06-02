@@ -1,0 +1,11 @@
+server:
+  port: 7921
+  servlet:
+    context-path: /interface
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  application:
+    name: kaiapi-interface
