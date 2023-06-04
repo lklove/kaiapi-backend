@@ -45,7 +45,7 @@ public class ApiOrder implements Serializable {
     /**
      * 单价
      */
-    private Double charging;
+    private BigDecimal charging;
 
     /**
      * 交易金额

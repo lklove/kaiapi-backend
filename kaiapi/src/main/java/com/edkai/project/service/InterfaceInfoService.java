@@ -9,8 +9,7 @@ import com.edkai.project.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.edkai.project.model.dto.interfaceinfo.InterfaceInvokeRequest;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.edkai.project.model.vo.InterfaceDetailVo;
-import com.edkai.project.model.vo.InterfaceInfoVo;
-import com.edkai.project.model.vo.InterfaceLeftVo;
+import com.edkai.common.model.vo.InterfaceInfoVo;
 import com.edkai.project.model.vo.ManageInterfaceVo;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package com.edkai.project.model.vo;
+package com.edkai.common.model.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

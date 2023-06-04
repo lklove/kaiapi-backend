@@ -17,11 +17,11 @@ spring:
         - id: thirdParty
           uri: lb://kaiapi-third-part
           predicates:
-            - Path=/api/alipay/**
+            - Path=/alipay/**
         - id: apiOrder
-          uri: lb://api-order
+          uri: lb://kaiapi-order
           predicates:
-            - Path=/api/order/**
+            - Path=/order/**
         - id: api
           uri: lb://kaiapi-backend
           predicates:

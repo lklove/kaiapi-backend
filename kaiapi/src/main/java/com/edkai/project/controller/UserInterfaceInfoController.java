@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.edkai.common.BaseResponse;
 import com.edkai.common.ErrorCode;
 import com.edkai.common.model.entity.UserInterfaceInfo;
+import com.edkai.common.model.to.AddUserInterfaceTo;
 import com.edkai.common.utils.ResultUtils;
 import com.edkai.project.annotation.AuthCheck;
 import com.edkai.project.common.*;
@@ -172,6 +173,16 @@ public class UserInterfaceInfoController {
                                                                               HttpServletRequest request) {
         Page<InterfaceLeftVo> interfaceLeftVoPage = userInterfaceInfoService.listUserInterfaceLeftNumByPage(current, pageSie, request);
         return ResultUtils.success(interfaceLeftVoPage);
+    }
+
+    @PostMapping("/feign/add")
+    public BaseResponse<Boolean> addUserInterfaceByFeign(@RequestBody AddUserInterfaceTo addUserInterfaceTo,
+                                                         HttpServletRequest request) {
+        if (addUserInterfaceTo == null ) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        boolean result=userInterfaceInfoService.addUserInterfaceByFeign(addUserInterfaceTo);
+        return ResultUtils.success(result);
     }
 
 }

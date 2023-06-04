@@ -10,7 +10,7 @@
             <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="orderSn" column="orderSn" jdbcType="VARCHAR"/>
             <result property="orderNum" column="orderNum" jdbcType="BIGINT"/>
-            <result property="charging" column="charging" jdbcType="FLOAT"/>
+            <result property="charging" column="charging" jdbcType="DECIMAL"/>
             <result property="totalAmount" column="totalAmount" jdbcType="DECIMAL"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>

@@ -78,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(adminPath).hasRole("admin")
                 // 对于登录接口 允许匿名访问.anonymous()，即未登陆时可以访问，登陆后携带了token就不能再访问了
                 .antMatchers(pathPatterns).anonymous()
-                .antMatchers("/userInterfaceInfo/updateUserLeftNum", "/user/checkUserLogin", "/user/getCaptcha", "/user/sendSms", "/charging/**").permitAll()
+                .antMatchers( "/user/checkUserLogin", "/user/getCaptcha", "/user/sendSms","/userInterfaceInfo/feign/add").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证,.authenticated()表示认证之后可以访问
                 .anyRequest().authenticated()
 //                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {

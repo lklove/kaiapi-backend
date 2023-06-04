@@ -25,14 +25,16 @@ spring:
     virtual-host: /
     username: admin
     password: admin
+    publisher-confirm-type: correlated #开启发送端确认
+    publisher-returns: true #开启发送端消息抵达队列的确认
+    template:
+      mandatory: true #只要抵达队列，以异步发送优先回调我们这个returnsConfirm
     listener:
       simple:
         acknowledge-mode: manual #手动确认接收到的消息
         prefetch: 1 # 每次只能获取一条消息，处理完成才能获取下一个消息
 server:
   port: 8200
-  servlet:
-    context-path: /api
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
@@ -50,3 +52,17 @@ dubbo:
     port: -1
   registry:
     address: nacos://localhost:8848
+
+alipay:
+  CHARSET: utf-8 #编码格式
+  SIGN_TYPE: RSA2 #签名方式
+  #沙箱环境应用appid值
+  APP_ID: 2021000122691997
+  #沙箱环境下的私钥
+  PRIVATE_KEY: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCrNJB4EcmXA/0sE38r/6C90EntAXeGIxRWoT2b2+gAi8+4A+G2OY0f282CCOxn3CCixvWHm5hnGyaX2lWJimCyMDg4tBsinFp82RAO44qaOdoMAB3evqph7ZLR1alvqIXupHiqSEe49HDCfzhZfiCFmX7z3hU7wzr8iaI0LQVGLXsP5ZgPU5XC8bB7P/s/RzzreF1yOtXe8LPMDCDbR6d3bp9NgNiGJhr0adU0j/CeNLiWueGQtuEQ7GaodqKkVFtmhrw4OEPMW3exmN1B0496qlLJSYuIsWBdkKHQP0XsxygBmZJjJIoCOekD+THYX+s7Dj7kE0glffdqMfsDQzGJAgMBAAECggEASyDi8L2lf+6RL8FSgiVIDWOUvTtyjttf9nAFUBrdITg5K+AQMV3p7vwOn6x4yU7Qx32Viy+dXkmM0wBNnvCpZChC06c9bR+9maHLKS1yyiDu7WszsGZs8FJHpmsjUktakpF8HgVf6+rgfIlFWgg+D0J/claXbMVMYjungUvsT5G1LZNS2fsgSs40vQAWcTaL+UUi/O2I42/d/ljDPPGonwthQbw2ven/SgE3RdkbvXfllVeVZiIlTZZuS7aZFIl2BGECfuUZE4I89YSFZUF4Vjsi5rAx6TAvyKqoBuGHkzj4RG6+1xVuotbYwHd/YhlXnFrY6Elm2OAk5mfNYK8VHQKBgQD5TYbU1whgl0kh2NPLuMh3isdMntCCyOcy4IC7Cok/FM75cHwW4u8lsNF6gRp8eKimJYtzfbEhLZRbKcIpCDiW8IORoHlaaMX4HCHgpZ5CrCzfHppc3nMrRptXw4YAuWbJXNCt0EYB4xwf7RWVEKusQ775Jf4Cs6vNQr7FoJK0mwKBgQCvzfSd1ut4DrcLR/v6PzGcUQGRs7ripE3WSL78Z93TQpGwBN3ewOCDYKCl6OQ4MIRhcPvqeeSYpLlLpa+UvZUZhE7bgxtNHd+AdVf7v6xYH4aQ20Sm52VWwbaAGF7zdblNA9gqX1OpNMvXZDSytU6XvDC4Te34PSjOOQiEL8uKqwKBgHbTWfG2sHqBgU0NsR2H7Jz127qMc+vyYChi01jTU8lqXKCN2cd60OvRFHdkc8BiLlhKyuX4QeYDeJPfGnk+PuLKrptJtq2+BKYWmpsdtYon0JdkWcTsDk7RL5esTQGpXPGbOKev/r5FhpE9Cq1rLbhE7hCI6EJXawrBxnYh6+sDAoGAPn9XEK2Qs/N3OvlyKHpCprFdf3CHZX7HdQATdSNvhmTJ6esw/LlQlyPIuHJcf2UwCnvh8m82xtT4Ul4qVxQ2ZwXUCtFG6VlPVRliF8sB96ntap2ogDUOn5Lp0AvZ5W7aWvic5iNRWHu+Y2nqGgW+VM6/+yUpDfCgCv/XeTaMg1UCgYEA736F5R4u1FfSeSQfo9nhVD89vX8ma5+1tUhO0wC0MN857bMf9v01HtaFaOX5zvK2/G8ge+h9r+OVhHQrWJ5Kl+pfN7bAYcoO425GnFIalIqCTe4mohdBDcGGQ/W1xHzcr16BB/TpOEEqh0lIIH4s7fML1MaVj4d6pBQBqgvmzGA=
+  #支付宝公钥
+  ALIPAY_PUBLIC_KEY: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlnQBMGOxHl0gDoKhsAFtLsKGdAJ2oFQITIkVdpVOHCBVlWRkur/LVYjacjhipDgzSeC0aNqxyziShdHEHDAU7J4ICgFhs4Pm5+12VSZXW6rOlBkJiMZNZpe7LC5xOHDnrmqw7tkanL2gD9uI7WdoJfsGPrP8aHKUoyCAKMqeHwHnt6dbfBO48WrH5aKZboH03f1o+vT/rSW2fVelEVUFzxClosQl/X7dC4ZHjAERRA1kqDJljIP0NDx7LH/jTIothwcqi1u2+Zf7zuSWAcLssW+pHt65tqEqIoyph29x9a7rnvwcyew5eTmkWLoOFNuzk4CZ9uCc0iN4469GrXheDQIDAQAB
+  #沙箱环境网关地址
+  ALIPAY_GATEWAY: https://openapi.alipaydev.com/gateway.do
+  #支付成功回调地址
+  NotifyUrl: http://h6tyqc.natappfree.cc/alipay/notify

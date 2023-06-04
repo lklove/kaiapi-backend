@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edkai.common.model.entity.InterfaceInfo;
 import com.edkai.common.model.entity.UserInterfaceInfo;
 import com.edkai.common.ErrorCode;
+import com.edkai.common.model.to.AddUserInterfaceTo;
 import com.edkai.project.constant.CommonConstant;
 import com.edkai.common.exception.BusinessException;
 import com.edkai.project.mapper.UserInterfaceInfoMapper;
@@ -250,6 +251,36 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
         }).collect(Collectors.toList());
         interfaceLeftVoPage.setRecords(newRecords);
         return interfaceLeftVoPage;
+    }
+
+    @Override
+    public boolean addUserInterfaceByFeign(AddUserInterfaceTo addUserInterfaceTo) {
+        if (addUserInterfaceTo == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Long interfaceId = addUserInterfaceTo.getInterfaceId();
+        if (interfaceId <=0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Long userId = addUserInterfaceTo.getUserId();
+        if (userId<=0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Long orderNum = addUserInterfaceTo.getOrderNum();
+        if (orderNum <=0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        UserInterfaceInfo oldUserInterfaceInfo = this.getOne(new QueryWrapper<UserInterfaceInfo>().eq("userId", userId).eq("interfaceInfoId", interfaceId));
+        if (oldUserInterfaceInfo== null){
+            oldUserInterfaceInfo = new UserInterfaceInfo();
+            oldUserInterfaceInfo.setInterfaceInfoId(interfaceId);
+            oldUserInterfaceInfo.setUserId(userId);
+            oldUserInterfaceInfo.setLeftNum(orderNum.intValue());
+            return this.save(oldUserInterfaceInfo);
+        }
+        Integer oldLeftNum = oldUserInterfaceInfo.getLeftNum();
+        oldUserInterfaceInfo.setLeftNum(oldLeftNum+orderNum.intValue());
+        return this.updateById(oldUserInterfaceInfo);
     }
 
 }

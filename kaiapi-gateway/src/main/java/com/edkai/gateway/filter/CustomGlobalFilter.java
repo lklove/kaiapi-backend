@@ -49,7 +49,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     /**
      *  只有该路径的不用经过鉴权
      */
-    private static final List<String> IP_INTERFACE_LIST = Arrays.asList("/api/**");
+    private static final List<String> IP_INTERFACE_LIST = Arrays.asList("/api/**","/order/**","/alipay/**");
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

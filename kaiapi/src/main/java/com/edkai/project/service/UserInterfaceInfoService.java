@@ -2,6 +2,7 @@ package com.edkai.project.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.edkai.common.model.entity.UserInterfaceInfo;
+import com.edkai.common.model.to.AddUserInterfaceTo;
 import com.edkai.project.model.dto.userInterfaceInfo.UserInterfaceInfoAddRequest;
 import com.edkai.project.model.dto.userInterfaceInfo.UserInterfaceInfoQueryRequest;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -62,4 +63,7 @@ public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
      * @return
      */
     Page<InterfaceLeftVo> listUserInterfaceLeftNumByPage(int current, int pageSie, HttpServletRequest request);
+
+    boolean addUserInterfaceByFeign(AddUserInterfaceTo addUserInterfaceTo);
+
 }

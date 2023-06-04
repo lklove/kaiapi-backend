@@ -15,7 +15,7 @@ import com.edkai.project.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.edkai.project.model.dto.interfaceinfo.InterfaceInvokeRequest;
 import com.edkai.project.model.enums.InterfaceInfoStatusEnum;
 import com.edkai.project.model.vo.InterfaceDetailVo;
-import com.edkai.project.model.vo.InterfaceInfoVo;
+import com.edkai.common.model.vo.InterfaceInfoVo;
 import com.edkai.project.model.vo.ManageInterfaceVo;
 import com.edkai.project.service.InterfaceInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -89,6 +89,20 @@ public class InterfaceInfoController {
         }
         boolean result = interfaceInfoService.updateInterfaceInfo(interfaceInfoUpdateRequest, request);
         return ResultUtils.success(result);
+    }
+
+    @GetMapping("/feign/get")
+    public BaseResponse<InterfaceInfoVo> feignGetInterfaceInfoById(long id,HttpServletRequest request) {
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        InterfaceInfo interfaceInfo=interfaceInfoService.getById(id);
+        if (interfaceInfo == null){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        InterfaceInfoVo interfaceInfoVo = new InterfaceInfoVo();
+        BeanUtils.copyProperties(interfaceInfo,interfaceInfoVo);
+        return ResultUtils.success(interfaceInfoVo);
     }
 
     /**
@@ -193,7 +207,6 @@ public class InterfaceInfoController {
      * @param interfaceInfoQueryRequest
      * @return
      */
-    @AuthCheck(mustRole = "admin")
     @GetMapping("/list/AllPage")
     public BaseResponse<Page<ManageInterfaceVo>> listInterfaceInfoAllByPage(InterfaceInfoQueryRequest interfaceInfoQueryRequest) {
         if (interfaceInfoQueryRequest == null) {

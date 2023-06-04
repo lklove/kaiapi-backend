@@ -21,7 +21,7 @@ import com.edkai.project.model.entity.User;
 import com.edkai.project.model.enums.InterfaceInfoStatusEnum;
 import com.edkai.project.model.enums.RequestMethodEnum;
 import com.edkai.project.model.vo.InterfaceDetailVo;
-import com.edkai.project.model.vo.InterfaceInfoVo;
+import com.edkai.common.model.vo.InterfaceInfoVo;
 import com.edkai.project.model.vo.ManageInterfaceVo;
 import com.edkai.project.service.InterfaceInfoService;
 import com.edkai.project.mapper.InterfaceInfoMapper;
