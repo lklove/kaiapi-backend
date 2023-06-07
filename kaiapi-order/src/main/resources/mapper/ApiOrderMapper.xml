@@ -5,23 +5,62 @@
 <mapper namespace="com.edkai.order.mapper.ApiOrderMapper">
 
     <resultMap id="BaseResultMap" type="com.edkai.order.model.entity.ApiOrder">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="interfaceId" column="interfaceId" jdbcType="BIGINT"/>
-            <result property="userId" column="userId" jdbcType="BIGINT"/>
-            <result property="orderSn" column="orderSn" jdbcType="VARCHAR"/>
-            <result property="orderNum" column="orderNum" jdbcType="BIGINT"/>
-            <result property="charging" column="charging" jdbcType="DECIMAL"/>
-            <result property="totalAmount" column="totalAmount" jdbcType="DECIMAL"/>
-            <result property="status" column="status" jdbcType="INTEGER"/>
-            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
-            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="interfaceId" column="interfaceId" jdbcType="BIGINT"/>
+        <result property="userId" column="userId" jdbcType="BIGINT"/>
+        <result property="orderSn" column="orderSn" jdbcType="VARCHAR"/>
+        <result property="orderNum" column="orderNum" jdbcType="BIGINT"/>
+        <result property="charging" column="charging" jdbcType="DECIMAL"/>
+        <result property="totalAmount" column="totalAmount" jdbcType="DECIMAL"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,interfaceId,userId,
+        id
+        ,interfaceId,userId,
         orderSn,orderNum,charging,
         totalAmount,status,createTime,
         updateTime,isDelete
     </sql>
+    <!--     /**
+    interfaceId;
+    name;
+
+     description;
+
+     orderSn;
+
+     orderNum;
+     status;
+    totalAmount;
+    tradeNo;
+    gmtPayment;
+    createTime;
+    charging;-->
+    <select id="getCurrentOrderInfo" resultType="com.edkai.order.model.vo.OrderDetailVo">
+        SELECT ao.`interfaceId`,
+        ii.`name`,
+        ii.`description`,
+        ao.`orderSn`,
+        ao.`orderNum`,
+        ao.`status`,
+        ao.`totalAmount`,
+        ai.`tradeNo`,
+        ai.`gmtPayment`,
+        ao.`createTime`,
+        ao.`charging`
+        FROM api_order ao
+        LEFT JOIN alipay_info ai ON ao.`orderSn` = ai.`orderSn`
+        LEFT JOIN interface_info ii ON ao.`interfaceId` = ii.`id`
+        <where>
+            ao.userId = #{userId}
+            <if test="status != null">
+                and status=#{status}
+            </if>
+        </where>
+        ORDER BY ao.`createTime` DESC
+    </select>
 </mapper>

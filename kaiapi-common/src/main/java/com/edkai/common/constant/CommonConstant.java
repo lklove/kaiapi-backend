@@ -1,4 +1,4 @@
-package com.edkai.project.constant;
+package com.edkai.common.constant;
 
 /**
  * 通用常量

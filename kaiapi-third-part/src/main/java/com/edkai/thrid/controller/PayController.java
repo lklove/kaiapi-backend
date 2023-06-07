@@ -5,19 +5,18 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.edkai.common.BaseResponse;
 import com.edkai.common.ErrorCode;
 import com.edkai.common.constant.RedisConstant;
 import com.edkai.common.exception.BusinessException;
+import com.edkai.common.utils.ResultUtils;
 import com.edkai.thrid.common.RabbitOrderPaySuccessUtils;
 import com.edkai.thrid.config.AliPayConfig;
 import com.edkai.thrid.modle.dto.AliPayDto;
 import com.edkai.thrid.modle.entity.AlipayInfo;
 import com.edkai.thrid.service.AlipayInfoService;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -91,14 +90,14 @@ public class PayController {
                 if (outTradeNo == null){
                     // 订单信息入库
                     AlipayInfo alipayInfo = new AlipayInfo();
-                    alipayInfo.setOrdersn(out_trade_no);
+                    alipayInfo.setOrderSn(out_trade_no);
                     alipayInfo.setSubject(params.get("subject"));
-                    alipayInfo.setTotalamount(new BigDecimal(params.get("total_amount")));
-                    alipayInfo.setBuyerpayamount(new BigDecimal(params.get("buyer_pay_amount")));
-                    alipayInfo.setBuyerid(params.get("buyer_id"));
-                    alipayInfo.setTradeno(params.get("trade_no"));
-                    alipayInfo.setTradestatus(params.get("trade_status"));
-                    alipayInfo.setGmtpayment(DateUtil.parse(params.get("gmt_payment")));
+                    alipayInfo.setTotalAmount(new BigDecimal(params.get("total_amount")));
+                    alipayInfo.setBuyerPayAmount(new BigDecimal(params.get("buyer_pay_amount")));
+                    alipayInfo.setBuyerId(params.get("buyer_id"));
+                    alipayInfo.setTradeNo(params.get("trade_no"));
+                    alipayInfo.setTradeStatus(params.get("trade_status"));
+                    alipayInfo.setGmtPayment(DateUtil.parse(params.get("gmt_payment")));
                     alipayInfoService.save(alipayInfo);
                     redisTemplate.opsForValue().set(key,alipayInfo,30, TimeUnit.MINUTES);
                     rabbitOrderPaySuccessUtils.sendPaySuccess(out_trade_no);
@@ -107,8 +106,25 @@ public class PayController {
         }
     }
 
-    @GetMapping("/test")
-    public String tetsHh(){
-        return "hahaha";
+    /**
+     * 查询订单的支付状态
+     * @param orderSn
+     * @return
+     */
+    @GetMapping("/queryTradeStatus")
+    @ResponseBody
+    public BaseResponse<AlipayInfo> queryTradeStatus(@RequestParam String orderSn){
+        if (null == orderSn){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        AlipayInfo alipayInfo = (AlipayInfo)redisTemplate.opsForValue().get(RedisConstant.ALIPAY_TRADE_INFO + orderSn);
+        if (null == alipayInfo){
+            return ResultUtils.success(null);
+        }
+        String tradeStatus = alipayInfo.getTradeStatus();
+        if ("TRADE_SUCCESS".equals(tradeStatus)){
+            return ResultUtils.success(alipayInfo);
+        }
+        return ResultUtils.success(null);
     }
 }

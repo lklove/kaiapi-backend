@@ -2,12 +2,11 @@ package com.edkai.project.model.dto.interfaceinfo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.edkai.project.common.PageRequest;
+import com.edkai.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * 查询请求

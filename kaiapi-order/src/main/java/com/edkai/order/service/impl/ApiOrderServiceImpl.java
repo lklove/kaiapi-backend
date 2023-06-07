@@ -8,6 +8,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edkai.common.BaseResponse;
 import com.edkai.common.ErrorCode;
@@ -22,8 +23,10 @@ import com.edkai.order.feign.InterfaceFeignService;
 import com.edkai.order.feign.UserFeignService;
 import com.edkai.order.model.dto.order.ApiOrderCancelDto;
 import com.edkai.order.model.dto.order.GenerateOrderRequest;
+import com.edkai.order.model.dto.order.OrderQueryRequest;
 import com.edkai.order.model.entity.ApiOrder;
 import com.edkai.order.model.enums.OrderStatusEnum;
+import com.edkai.order.model.vo.OrderDetailVo;
 import com.edkai.order.model.vo.OrderVo;
 import com.edkai.order.service.ApiOrderService;
 import com.edkai.order.mapper.ApiOrderMapper;
@@ -40,7 +43,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author ASUS
@@ -192,6 +198,36 @@ public class ApiOrderServiceImpl extends ServiceImpl<ApiOrderMapper, ApiOrder>
             throw new BusinessException(ErrorCode.OPERATION_ERROR,"订单取消失败");
         }
         return ResultUtils.success("取消订单成功");
+    }
+
+    @Override
+    public Page<OrderDetailVo> getOrderInfoByPage(OrderQueryRequest orderQueryRequest) {
+        if (orderQueryRequest == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Long userId = orderQueryRequest.getUserId();
+        if (userId < 0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long current = orderQueryRequest.getCurrent();
+        // 限制爬虫
+        long size = orderQueryRequest.getPageSize();
+        if (size > 20) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Integer status = orderQueryRequest.getStatus();
+        Page<OrderDetailVo> orderDetailVoPage = apiOrderMapper.getCurrentOrderInfo(new Page<>(current, size),userId,status);
+        List<OrderDetailVo> records = orderDetailVoPage.getRecords();
+        List<OrderDetailVo> collect = records.stream().map(record -> {
+            Integer status1 = record.getStatus();
+            if (status1 == 0) {
+                Date date = record.getCreateTime();
+                record.setExpirationTime(DateUtil.offset(date, DateField.MINUTE, 30));
+            }
+            return record;
+        }).collect(Collectors.toList());
+        orderDetailVoPage.setRecords(collect);
+        return orderDetailVoPage;
     }
 
     /**

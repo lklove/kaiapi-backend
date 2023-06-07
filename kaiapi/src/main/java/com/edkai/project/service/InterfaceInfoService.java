@@ -1,6 +1,7 @@
 package com.edkai.project.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.edkai.common.BaseResponse;
 import com.edkai.common.model.entity.InterfaceInfo;
 import com.edkai.project.common.BranchDeleteRequest;
 import com.edkai.project.model.dto.interfaceinfo.InterfaceInfoAddRequest;
@@ -33,7 +34,7 @@ public interface InterfaceInfoService extends IService<InterfaceInfo> {
      * @param request
      * @return
      */
-    Object invoke(InterfaceInvokeRequest interfaceInvokeRequest, HttpServletRequest request);
+    BaseResponse invoke(InterfaceInvokeRequest interfaceInvokeRequest, HttpServletRequest request);
 
     /**
      * 分页查询接口信息

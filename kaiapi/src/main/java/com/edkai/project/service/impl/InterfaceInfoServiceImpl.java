@@ -1,9 +1,11 @@
 package com.edkai.project.service.impl;
 
 import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.edkai.common.BaseResponse;
 import com.edkai.common.model.entity.InterfaceInfo;
 
 import com.edkai.common.model.entity.UserInterfaceInfo;
@@ -48,7 +50,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, InterfaceInfo>
         implements InterfaceInfoService {
-    private static final String GATEWAY_HOST="http://localhost:8090";
+    private static final String GATEWAY_HOST = "http://localhost:8090";
     @Resource
     private UserService userService;
 
@@ -89,7 +91,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
     }
 
     @Override
-    public Object invoke(InterfaceInvokeRequest interfaceInvokeRequest, HttpServletRequest request) {
+    public BaseResponse invoke(InterfaceInvokeRequest interfaceInvokeRequest, HttpServletRequest request) {
         if (interfaceInvokeRequest == null || interfaceInvokeRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -120,7 +122,12 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         if (result.getStatus() != HttpStatus.OK.value()) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "操作失败");
         }
-        return result.body();
+        try{
+            BaseResponse baseResponse = JSONUtil.toBean(result.body(), BaseResponse.class,false);
+            return baseResponse;
+        }catch (Exception e){
+            throw new BusinessException(ErrorCode.OPERATION_ERROR, "操作失败");
+        }
     }
 
     @Override
@@ -131,7 +138,8 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         }
         //分页查询接口信息
         QueryWrapper<InterfaceInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderBy(true,true,"isFree");
+        queryWrapper.eq("status", 1);
+        queryWrapper.orderBy(true, true, "isFree");
         Page<InterfaceInfo> interfaceInfoPage = this.page(new Page<>(current, pageSize), queryWrapper);
         Page<InterfaceInfoVo> interfaceInfoVoPage = new Page<>();
         BeanUtils.copyProperties(interfaceInfoPage, interfaceInfoVoPage, "records");
@@ -227,7 +235,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
 
     @Override
     public Page<ManageInterfaceVo> listInterfaceInfoAllByPage(InterfaceInfoQueryRequest interfaceInfoQueryRequest) {
-        if (interfaceInfoQueryRequest == null){
+        if (interfaceInfoQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         long current = interfaceInfoQueryRequest.getCurrent();
@@ -236,26 +244,26 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         if (size > 50) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Page<ManageInterfaceVo> manageInterfaceVoPage=interfaceInfoMapper.selectAllPage(new Page<ManageInterfaceVo>(current,size),interfaceInfoQueryRequest);
+        Page<ManageInterfaceVo> manageInterfaceVoPage = interfaceInfoMapper.selectAllPage(new Page<ManageInterfaceVo>(current, size), interfaceInfoQueryRequest);
         return manageInterfaceVoPage;
     }
 
     @Override
-    public InterfaceDetailVo getInterfaceInfoById(long id,HttpServletRequest request) {
-        if (id<0){
+    public InterfaceDetailVo getInterfaceInfoById(long id, HttpServletRequest request) {
+        if (id < 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User loginUser = userService.getLoginUser(request);
         InterfaceDetailVo interfaceDetailVo = new InterfaceDetailVo();
         InterfaceInfo interfaceInfo = this.getById(id);
-        if (interfaceInfo == null){
+        if (interfaceInfo == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
         String realUrl = interfaceInfo.getUrl();
         interfaceInfo.setUrl(secretUrl(realUrl));
-        BeanUtils.copyProperties(interfaceInfo,interfaceDetailVo);
+        BeanUtils.copyProperties(interfaceInfo, interfaceDetailVo);
         // 判断接口是否免费，免费设置剩余次数为-1，接口不免费则查询表
-        if (interfaceInfo.getIsFree() == 1){
+        if (interfaceInfo.getIsFree() == 1) {
             interfaceDetailVo.setLeftNum(-1);
             return interfaceDetailVo;
         }
@@ -264,9 +272,9 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
                 .eq("interfaceInfoId", interfaceInfo.getId());
         UserInterfaceInfo userInterfaceInfo = userInterfaceInfoMapper.selectOne(queryWrapper);
         // 没有接口与用户信息则设置剩余次数为0
-        if (userInterfaceInfo == null){
+        if (userInterfaceInfo == null) {
             interfaceDetailVo.setLeftNum(0);
-        }else {
+        } else {
             // 有用户接口调用信息则设置调用信息。
             interfaceDetailVo.setLeftNum(userInterfaceInfo.getLeftNum());
         }
@@ -274,9 +282,9 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
     }
 
 
-    public String secretUrl(String url){
+    public String secretUrl(String url) {
         String[] split = url.split("/interface");
-        return GATEWAY_HOST+"/interface/"+split[1];
+        return GATEWAY_HOST + "/interface" + split[1];
     }
 }
 

@@ -85,7 +85,10 @@ public class OrderListener {
         try {
             log.info("监听到订单超时，订单信息为：{}",apiOrder);
             // 订单超时未支付处理，已支付的直接ack
-            if (OrderStatusEnum.TO_BE_PAID.getValue()== apiOrder.getStatus()){
+            Long id = apiOrder.getId();
+            // 查询最新订单信息
+            ApiOrder newApiOrder = apiOrderService.getById(id);
+            if (OrderStatusEnum.TO_BE_PAID.getValue()== newApiOrder.getStatus()){
                 apiOrderService.updateOrderClose(apiOrder);
             }
             channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);

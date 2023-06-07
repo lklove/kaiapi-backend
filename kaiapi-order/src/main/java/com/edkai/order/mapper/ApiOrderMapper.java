@@ -1,8 +1,11 @@
 package com.edkai.order.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.edkai.order.model.entity.ApiOrder;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.edkai.order.model.vo.OrderDetailVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author ASUS
@@ -13,6 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ApiOrderMapper extends BaseMapper<ApiOrder> {
 
+    Page<OrderDetailVo> getCurrentOrderInfo(Page<Object> objectPage, @Param("userId") Long userId, @Param("status") Integer status);
 }
 
 

@@ -8,7 +8,7 @@ import com.edkai.common.model.entity.InterfaceInfo;
 import com.edkai.common.model.entity.UserInterfaceInfo;
 import com.edkai.common.ErrorCode;
 import com.edkai.common.model.to.AddUserInterfaceTo;
-import com.edkai.project.constant.CommonConstant;
+import com.edkai.common.constant.CommonConstant;
 import com.edkai.common.exception.BusinessException;
 import com.edkai.project.mapper.UserInterfaceInfoMapper;
 import com.edkai.project.model.dto.userInterfaceInfo.UserInterfaceInfoAddRequest;
@@ -71,7 +71,7 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
         // 判断有不有用户与该接口记录，没有则添加
         QueryWrapper<UserInterfaceInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userId",userId);
-        queryWrapper.eq("interfaceInfoId",userId);
+        queryWrapper.eq("interfaceInfoId",interfaceInfoId);
         UserInterfaceInfo userInterfaceInfo = this.getOne(queryWrapper);
         if (userInterfaceInfo == null){
             userInterfaceInfo = new UserInterfaceInfo();

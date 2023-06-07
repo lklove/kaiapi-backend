@@ -5,14 +5,14 @@
 <mapper namespace="com.edkai.thrid.mapper.AlipayInfoMapper">
 
     <resultMap id="BaseResultMap" type="com.edkai.thrid.modle.entity.AlipayInfo">
-            <id property="ordersn" column="orderSn" jdbcType="VARCHAR"/>
+            <id property="orderSn" column="orderSn" jdbcType="VARCHAR"/>
             <result property="subject" column="subject" jdbcType="VARCHAR"/>
-            <result property="totalamount" column="totalAmount" jdbcType="DECIMAL"/>
-            <result property="buyerpayamount" column="buyerPayAmount" jdbcType="DECIMAL"/>
-            <result property="buyerid" column="buyerId" jdbcType="VARCHAR"/>
-            <result property="tradeno" column="tradeNo" jdbcType="VARCHAR"/>
-            <result property="tradestatus" column="tradeStatus" jdbcType="VARCHAR"/>
-            <result property="gmtpayment" column="gmtPayment" jdbcType="TIMESTAMP"/>
+            <result property="totalAmount" column="totalAmount" jdbcType="DECIMAL"/>
+            <result property="buyerPayAmount" column="buyerPayAmount" jdbcType="DECIMAL"/>
+            <result property="buyerId" column="buyerId" jdbcType="VARCHAR"/>
+            <result property="tradeNo" column="tradeNo" jdbcType="VARCHAR"/>
+            <result property="tradeStatus" column="tradeStatus" jdbcType="VARCHAR"/>
+            <result property="gmtPayment" column="gmtPayment" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

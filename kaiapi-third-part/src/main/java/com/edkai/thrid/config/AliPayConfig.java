@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "alipay")
+@ConfigurationProperties(prefix = "aliyun.alipay")
 @Data
 public class AliPayConfig {
     private String CHARSET;

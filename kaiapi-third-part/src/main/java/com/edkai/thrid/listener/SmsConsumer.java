@@ -1,17 +1,23 @@
 package com.edkai.thrid.listener;
 
+import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsResponse;
+import com.edkai.common.ErrorCode;
 import com.edkai.common.constant.RabbitConstant;
 import com.edkai.common.constant.RedisConstant;
+import com.edkai.common.exception.BusinessException;
 import com.edkai.common.model.to.SmsTo;
+import com.edkai.thrid.common.AliSmsUtils;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.Map;
 
 /**
@@ -25,6 +31,9 @@ public class SmsConsumer {
 
     @Resource
     RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    AliSmsUtils aliSmsUtils;
 
     @RabbitListener(queues = RabbitConstant.SMS_QUEUE_NAME)
     public void smsListener(SmsTo smsTo, Message message, Channel channel) throws IOException{
@@ -46,14 +55,19 @@ public class SmsConsumer {
                 throw new RuntimeException("请求参数错误");
             }
             // 模拟发送短信
+            SendSmsResponse sendSmsResponse = aliSmsUtils.sendSms(smsTo);
+            String resCode = sendSmsResponse.getBody().getCode();
+            if (!"OK".equals(resCode)){
+                log.error("短信发送失败原因：{}",sendSmsResponse.getBody().getMessage());
+                throw new RemoteException(sendSmsResponse.getBody().getMessage());
+            }
             log.info("发送短信成功，手机号：{},验证码:{}",smsTo.getMobile(),smsTo.getCode());
             channel.basicAck(deliveryTag,false);
             redisTemplate.delete(key);
         } catch (Exception e) {
-            log.info("手机号{}第{}次重试",smsTo.getMobile(),retry+1);
+            log.error("手机号{}第{}次重试",smsTo.getMobile(),retry);
             redisTemplate.opsForHash().put(key,"retry",retry+1);
             channel.basicReject(deliveryTag, true);
-            throw new RuntimeException(e);
         }
     }
 

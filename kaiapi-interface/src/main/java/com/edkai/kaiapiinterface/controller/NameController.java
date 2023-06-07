@@ -1,5 +1,7 @@
 package com.edkai.kaiapiinterface.controller;
 
+import com.edkai.common.BaseResponse;
+import com.edkai.common.utils.ResultUtils;
 import com.edkai.kaiapiinterface.modle.User;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,12 +13,14 @@ import org.springframework.web.bind.annotation.*;
 public class NameController {
 
     @GetMapping
-    public String getNameByGet(String name){
-        return "GET我的名字是"+name;
+    public BaseResponse<String> getNameByGet(String name){
+        String result="GET我的名字是"+name;
+        return ResultUtils.success(result) ;
     }
 
     @PostMapping("/user")
-    public String getNameByPost(@RequestBody User user){
-        return "POST我的名字是"+user.getName();
+    public BaseResponse<String> getNameByPost(@RequestBody User user){
+        String result="POST我的名字是"+user.getName();
+        return ResultUtils.success(result) ;
     }
 }

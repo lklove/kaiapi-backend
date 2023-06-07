@@ -1,6 +1,6 @@
-package com.edkai.project.common;
+package com.edkai.common;
 
-import com.edkai.project.constant.CommonConstant;
+import com.edkai.common.constant.CommonConstant;
 import lombok.Data;
 
 /**

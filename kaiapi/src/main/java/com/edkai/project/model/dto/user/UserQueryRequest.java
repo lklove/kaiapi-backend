@@ -1,6 +1,6 @@
 package com.edkai.project.model.dto.user;
 
-import com.edkai.project.common.PageRequest;
+import com.edkai.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

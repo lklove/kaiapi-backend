@@ -1,10 +1,13 @@
 package com.edkai.order.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.edkai.common.BaseResponse;
 import com.edkai.order.model.dto.order.ApiOrderCancelDto;
 import com.edkai.order.model.dto.order.GenerateOrderRequest;
+import com.edkai.order.model.dto.order.OrderQueryRequest;
 import com.edkai.order.model.entity.ApiOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.edkai.order.model.vo.OrderDetailVo;
 import com.edkai.order.model.vo.OrderVo;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,4 +56,6 @@ public interface ApiOrderService extends IService<ApiOrder> {
      * @return
      */
     BaseResponse cancelOrderSn(ApiOrderCancelDto apiOrderCancelDto, HttpServletRequest request, HttpServletResponse response);
+
+    Page<OrderDetailVo> getOrderInfoByPage(OrderQueryRequest orderQueryRequest);
 }

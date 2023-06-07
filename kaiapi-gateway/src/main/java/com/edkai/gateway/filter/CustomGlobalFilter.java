@@ -1,6 +1,8 @@
 package com.edkai.gateway.filter;
 
 import cn.hutool.core.text.AntPathMatcher;
+import cn.hutool.json.JSONUtil;
+import com.edkai.common.BaseResponse;
 import com.edkai.common.model.entity.InterfaceInfo;
 import com.edkai.common.model.entity.User;
 import com.edkai.common.service.InnerInterfaceInfoService;
@@ -146,12 +148,6 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                             // 拼接字符串
                             return super.writeWith(
                                     fluxBody.map(dataBuffer -> {
-                                        // 7. 调用成功，接口调用次数 + 1 invokeCount
-                                        try {
-                                            innerUserInterfaceInfoService.invokeCount(interfaceInfoId, userId);
-                                        } catch (Exception e) {
-                                            log.error("invokeCount error", e);
-                                        }
                                         byte[] content = new byte[dataBuffer.readableByteCount()];
                                         dataBuffer.read(content);
                                         DataBufferUtils.release(dataBuffer);//释放掉内存
@@ -159,7 +155,17 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                                         StringBuilder sb2 = new StringBuilder(200);
                                         List<Object> rspArgs = new ArrayList<>();
                                         rspArgs.add(originalResponse.getStatusCode());
-                                        String data = new String(content, StandardCharsets.UTF_8); //data
+                                        String data = new String(content, StandardCharsets.UTF_8);//data
+                                        // 拿到数据后才进行判断是否请求成功，成功减库存 json转换一下
+                                        BaseResponse baseResponse = JSONUtil.toBean(data, BaseResponse.class);
+                                        if (baseResponse!=null || baseResponse.getCode()== 0){
+                                            // 7. 调用成功，接口调用次数 + 1 invokeCount
+                                            try {
+                                                innerUserInterfaceInfoService.invokeCount(interfaceInfoId, userId);
+                                            } catch (Exception e) {
+                                                log.error("invokeCount error", e);
+                                            }
+                                        }
                                         sb2.append(data);
                                         // 打印日志
                                         log.info("响应结果：" + data);

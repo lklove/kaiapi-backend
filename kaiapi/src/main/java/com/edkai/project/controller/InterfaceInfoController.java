@@ -42,7 +42,6 @@ public class InterfaceInfoController {
 
     /**
      * 创建
-     *
      * @param interfaceInfoAddRequest
      * @param request
      * @return
@@ -140,7 +139,7 @@ public class InterfaceInfoController {
 
     /**
      * 分页获取接口可用列表
-     *
+
      * @param
      * @param request
      * @return
@@ -193,12 +192,11 @@ public class InterfaceInfoController {
     }
 
     @PostMapping("/invoke")
-    public BaseResponse<Object> invoke(@RequestBody InterfaceInvokeRequest interfaceInvokeRequest, HttpServletRequest request) {
+    public BaseResponse invoke(@RequestBody InterfaceInvokeRequest interfaceInvokeRequest, HttpServletRequest request) {
         if (interfaceInvokeRequest == null || interfaceInvokeRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Object result = interfaceInfoService.invoke(interfaceInvokeRequest, request);
-        return ResultUtils.success(result);
+        return interfaceInfoService.invoke(interfaceInvokeRequest, request);
     }
 
     /**

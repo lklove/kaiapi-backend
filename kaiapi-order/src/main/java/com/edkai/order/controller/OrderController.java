@@ -1,11 +1,14 @@
 package com.edkai.order.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.edkai.common.BaseResponse;
 import com.edkai.common.ErrorCode;
 import com.edkai.common.exception.BusinessException;
 import com.edkai.common.utils.ResultUtils;
 import com.edkai.order.model.dto.order.ApiOrderCancelDto;
 import com.edkai.order.model.dto.order.GenerateOrderRequest;
+import com.edkai.order.model.dto.order.OrderQueryRequest;
+import com.edkai.order.model.vo.OrderDetailVo;
 import com.edkai.order.model.vo.OrderVo;
 import com.edkai.order.service.ApiOrderService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.Result;
 
 @RestController
 public class OrderController {
@@ -56,5 +58,14 @@ public class OrderController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         return apiOrderService.cancelOrderSn(apiOrderCancelDto,request,response);
+    }
+
+    @GetMapping("/getOrderInfo")
+    public BaseResponse<Page<OrderDetailVo>> getOrderInfoByPage(OrderQueryRequest orderQueryRequest){
+        if (orderQueryRequest == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Page<OrderDetailVo> orderDetailVoPage=apiOrderService.getOrderInfoByPage(orderQueryRequest);
+        return ResultUtils.success(orderDetailVoPage);
     }
 }
