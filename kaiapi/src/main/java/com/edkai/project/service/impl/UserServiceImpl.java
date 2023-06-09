@@ -4,7 +4,9 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edkai.common.constant.RedisConstant;
@@ -41,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -137,7 +140,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public LoginUserVo userLogin(String userAccount, String userPassword, HttpServletResponse response) {
+    public LoginUserVo userLogin(String userAccount, String userPassword) {
         // 1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
@@ -268,7 +271,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public LoginUserVo loginBySms(UserLoginBySmsRequest userLoginBySmsRequest, HttpServletResponse response) {
+    public LoginUserVo loginBySms(UserLoginBySmsRequest userLoginBySmsRequest) {
         if (userLoginBySmsRequest == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -289,6 +292,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.SMS_CODE_ERROR);
         }
         return initUser(user);
+    }
+
+    @Override
+    public String getGithubStart() {
+        String listContent = null;
+        try {
+            listContent= HttpUtil.get("https://img.shields.io/github/stars/lklove?style=social");
+        }catch (Exception e){
+            throw new BusinessException(ErrorCode.OPERATION_ERROR,"获取GitHub Starts 超时");
+        }
+        //该操作查询时间较长
+        List<String> titles = ReUtil.findAll("<title>(.*?)</title>", listContent, 1);
+        String stars = null;
+        for (String title : titles) {
+            //打印标题
+            String[] split = title.split(":");
+            stars = split[1];
+        }
+        return stars;
     }
 
     private LoginUserVo initUser(UserDetails userDetails){

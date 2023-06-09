@@ -1,5 +1,6 @@
 package com.edkai.order.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.edkai.common.BaseResponse;
 import com.edkai.common.ErrorCode;
@@ -8,6 +9,8 @@ import com.edkai.common.utils.ResultUtils;
 import com.edkai.order.model.dto.order.ApiOrderCancelDto;
 import com.edkai.order.model.dto.order.GenerateOrderRequest;
 import com.edkai.order.model.dto.order.OrderQueryRequest;
+import com.edkai.order.model.entity.ApiOrder;
+import com.edkai.order.model.enums.OrderStatusEnum;
 import com.edkai.order.model.vo.OrderDetailVo;
 import com.edkai.order.model.vo.OrderVo;
 import com.edkai.order.service.ApiOrderService;
@@ -68,4 +71,16 @@ public class OrderController {
         Page<OrderDetailVo> orderDetailVoPage=apiOrderService.getOrderInfoByPage(orderQueryRequest);
         return ResultUtils.success(orderDetailVoPage);
     }
+
+    /**
+     * 获取成功交易的订单数
+     * @return
+     */
+    @GetMapping("/getOrderSuccess")
+    public BaseResponse<Long> getOrderSuccessCount(){
+        QueryWrapper<ApiOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", OrderStatusEnum.FINISH.getValue());
+        return ResultUtils.success(apiOrderService.count(queryWrapper));
+    }
+
 }

@@ -61,11 +61,10 @@ public class UserController {
      * 用户登录
      *
      * @param userLoginRequest
-     * @param response
      * @return
      */
     @PostMapping("/login")
-    public BaseResponse<LoginUserVo> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
+    public BaseResponse<LoginUserVo> userLogin(@RequestBody UserLoginRequest userLoginRequest) {
         if (userLoginRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -74,7 +73,7 @@ public class UserController {
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        LoginUserVo loginUserVo = userService.userLogin(userAccount, userPassword, response);
+        LoginUserVo loginUserVo = userService.userLogin(userAccount, userPassword);
         return ResultUtils.success(loginUserVo);
     }
 
@@ -107,16 +106,15 @@ public class UserController {
     /**
      * 短信登录
      * @param userLoginBySmsRequest
-     * @param response
      * @return
      */
     @ApiOperation("用户通过手机号进行登录")
     @PostMapping("/loginBySms")
-    public BaseResponse<LoginUserVo> loginBySms(@RequestBody UserLoginBySmsRequest userLoginBySmsRequest , HttpServletResponse response){
+    public BaseResponse<LoginUserVo> loginBySms(@RequestBody UserLoginBySmsRequest userLoginBySmsRequest){
         if (userLoginBySmsRequest == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        LoginUserVo loginUserVo=userService.loginBySms(userLoginBySmsRequest,response);
+        LoginUserVo loginUserVo=userService.loginBySms(userLoginBySmsRequest);
         return ResultUtils.success(loginUserVo);
     }
 
@@ -201,6 +199,20 @@ public class UserController {
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
         return ResultUtils.success(userVO);
+    }
+
+    /**
+     * 获取全部用户数用户
+     */
+    @GetMapping("/getAllUserCount")
+    public BaseResponse<Long> getAllUserCount() {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<User>().eq("isDelete",0);
+        return ResultUtils.success(userService.count(queryWrapper));
+    }
+
+    @GetMapping("/getGithubStart")
+    public BaseResponse<String> getGithubStart(){
+        return ResultUtils.success(userService.getGithubStart());
     }
 
     /**

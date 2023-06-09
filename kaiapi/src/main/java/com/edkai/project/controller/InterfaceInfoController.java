@@ -200,7 +200,7 @@ public class InterfaceInfoController {
     }
 
     /**
-     * 管理员获取所有的分页信息
+     * 获取所有的分页信息
      *
      * @param interfaceInfoQueryRequest
      * @return
@@ -213,5 +213,13 @@ public class InterfaceInfoController {
         Page<ManageInterfaceVo> manageInterfaceVoPage = interfaceInfoService.listInterfaceInfoAllByPage(interfaceInfoQueryRequest);
         return ResultUtils.success(manageInterfaceVoPage);
     }
+
+    @GetMapping("/count")
+    public BaseResponse<Long> getAvailableInterface(){
+        QueryWrapper<InterfaceInfo> queryWrapper =new QueryWrapper<InterfaceInfo>();
+        queryWrapper.eq("status",1);
+        return ResultUtils.success(interfaceInfoService.count(queryWrapper));
+    }
+
 
 }

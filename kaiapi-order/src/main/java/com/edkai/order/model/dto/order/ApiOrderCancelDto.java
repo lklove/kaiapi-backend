@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * 取消订单dto
- * @author YukeSeko
+ * @author lk
  */
 @Data
 public class ApiOrderCancelDto implements Serializable {
