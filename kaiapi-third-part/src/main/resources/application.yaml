@@ -70,9 +70,9 @@ aliyun:
     #支付成功回调地址
     NotifyUrl: http://jqtry5.natappfree.cc/alipay/notify
   sms:
-    accessKeyId: LTAI5tKsnVtX6ju6ctR6QzSt
-    accessKeySecret: lTul0dGrWKzyBAgdPz8lTzOHmKBCoV
+    accessKeyId: #akId
+    accessKeySecret: #自己的密钥
     region: cn-hangzhou
-    templateCode: SMS_461185058
+    templateCode: #短信模板
     endpointOverride: dysmsapi.aliyuncs.com
-    signName: Api接口开放平台
+    signName: #短信签名
