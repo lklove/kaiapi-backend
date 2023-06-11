@@ -3,22 +3,27 @@ package com.edkai.project.service.impl;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.generator.RandomGenerator;
+import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.edkai.common.BaseResponse;
 import com.edkai.common.constant.RedisConstant;
 import com.edkai.common.model.to.SmsTo;
 import com.edkai.common.utils.AuthPhoneNumberUtil;
 import com.edkai.common.ErrorCode;
+import com.edkai.common.utils.ResultUtils;
 import com.edkai.project.common.RabbitMqUtils;
 import com.edkai.project.common.SmsLimiter;
 import com.edkai.project.config.security.component.JwtTokenUtil;
 import com.edkai.project.constant.UserConstant;
 import com.edkai.common.exception.BusinessException;
 import com.edkai.project.mapper.UserMapper;
+import com.edkai.project.model.dto.user.UserBindPhoneRequest;
 import com.edkai.project.model.dto.user.UserLoginBySmsRequest;
 import com.edkai.project.model.dto.user.UserRegisterRequest;
 import com.edkai.project.model.entity.User;
@@ -311,6 +316,52 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             stars = split[1];
         }
         return stars;
+    }
+
+    @Override
+    public BaseResponse bindPhone(UserBindPhoneRequest userBindPhoneRequest, HttpServletRequest request) {
+        String captcha = userBindPhoneRequest.getCaptcha();
+        Long id = userBindPhoneRequest.getId();
+        String userAccount = userBindPhoneRequest.getUserAccount();
+        String mobile = userBindPhoneRequest.getMobile();
+        String code = userBindPhoneRequest.getCode();
+        String signature = request.getHeader("signature");
+        if (StringUtils.isAnyBlank(userAccount, String.valueOf(id),mobile,code,captcha,signature)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        String picCaptcha = (String) redisTemplate.opsForValue().get(RedisConstant.CAPTCHA_PREFIX + signature);
+        //验证图形验证码是否正确
+        if (null == picCaptcha || AuthPhoneNumberUtil.isCaptcha(captcha) || !captcha.equals(picCaptcha)){
+            throw new BusinessException(ErrorCode.OPERATION_ERROR,"图形验证码错误或已经过期，请重新刷新验证码");
+        }
+        //验证手机号是否正确
+        if(!AuthPhoneNumberUtil.isPhoneNum(mobile)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"手机号非法");
+        }
+        // 手机号和验证码是否匹配
+        boolean verify = smsLimiter.verifyCode(mobile, code);
+        if (!verify){
+            throw new BusinessException(ErrorCode.SMS_CODE_ERROR);
+        }
+        synchronized (userAccount.intern()){
+            //手机号不能重复
+            String getMapperPhone = userMapper.selectPhone(mobile);
+            if (null != getMapperPhone){
+                throw new BusinessException(ErrorCode.PARAMS_ERROR,"手机号已经被注册");
+            }
+            boolean update = this.update(new UpdateWrapper<User>().eq("id", id).eq("userAccount", userAccount).set("mobile", mobile));
+            if (!update){
+                throw new BusinessException(ErrorCode.OPERATION_ERROR);
+            }
+        }
+        String phone = DesensitizedUtil.mobilePhone(mobile);
+        //更新全局对象中的用户信息
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser =(User) authentication.getPrincipal();
+        currentUser.setMobile(phone);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(currentUser, null, currentUser.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        return ResultUtils.success(phone);
     }
 
     private LoginUserVo initUser(UserDetails userDetails){

@@ -267,4 +267,10 @@ public class UserController {
         return ResultUtils.success(userVOPage);
     }
 
+    @ApiOperation("绑定用户手机号")
+    @PostMapping("/bindPhone")
+    public BaseResponse bindPhone(UserBindPhoneRequest userBindPhoneRequest,HttpServletRequest request){
+        return userService.bindPhone(userBindPhoneRequest,request);
+    }
+
 }

@@ -1,6 +1,8 @@
 package com.edkai.project.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.edkai.common.BaseResponse;
+import com.edkai.project.model.dto.user.UserBindPhoneRequest;
 import com.edkai.project.model.dto.user.UserLoginBySmsRequest;
 import com.edkai.project.model.dto.user.UserRegisterRequest;
 import com.edkai.project.model.entity.User;
@@ -75,4 +77,6 @@ public interface UserService extends IService<User> {
      * @return start数
      */
     String getGithubStart();
+
+    BaseResponse bindPhone(UserBindPhoneRequest userBindPhoneRequest, HttpServletRequest request);
 }
