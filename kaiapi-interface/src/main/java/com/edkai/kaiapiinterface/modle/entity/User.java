@@ -1,4 +1,4 @@
-package com.edkai.kaiapiinterface.modle;
+package com.edkai.kaiapiinterface.modle.entity;
 
 /**
  * @author ASUS

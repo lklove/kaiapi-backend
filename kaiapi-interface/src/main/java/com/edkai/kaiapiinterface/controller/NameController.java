@@ -2,7 +2,7 @@ package com.edkai.kaiapiinterface.controller;
 
 import com.edkai.common.BaseResponse;
 import com.edkai.common.utils.ResultUtils;
-import com.edkai.kaiapiinterface.modle.User;
+import com.edkai.kaiapiinterface.modle.entity.User;
 import org.springframework.web.bind.annotation.*;
 
 /**
