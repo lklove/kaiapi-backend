@@ -19,6 +19,7 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
+  #rabbitmq配置
   rabbitmq:
     addresses: 192.168.4.134
     port: 5672
@@ -29,10 +30,6 @@ spring:
     publisher-returns: true #开启发送端消息抵达队列的确认
     template:
       mandatory: true #只要抵达队列，以异步发送优先回调我们这个returnsConfirm
-  security:
-    user:
-      name: user
-      password: user
 server:
   port: 7529
   servlet:

@@ -37,6 +37,10 @@ server:
   port: 8083
   servlet:
     context-path: /order
+    session:
+      cookie:
+        same-site: none
+        secure: true
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
