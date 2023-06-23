@@ -62,9 +62,9 @@ aliyun:
     #支付成功回调地址
     NotifyUrl: https://61.139.65.135:13607/alipay/notify
   sms:
-    accessKeyId: LTAI5tKsnVtX6ju6ctR6QzSt #akId
-    accessKeySecret: lTul0dGrWKzyBAgdPz8lTzOHmKBCoV #自己的密钥
+    accessKeyId:  #akId
+    accessKeySecret:  #自己的密钥
     region: cn-hangzhou
-    templateCode: SMS_461185058 #短信模板
+    templateCode:  #短信模板
     endpointOverride: dysmsapi.aliyuncs.com
-    signName: Api接口开放平台 #短信签名
+    signName:  #短信签名
