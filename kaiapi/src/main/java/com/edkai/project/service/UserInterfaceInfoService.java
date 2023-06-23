@@ -41,6 +41,7 @@ public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
 
     /**
      * 获取分页用户接口视图对象
+     *
      * @param userInterfaceInfoQueryRequest
      * @param request
      * @return
@@ -49,6 +50,7 @@ public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
 
     /**
      * 添加用户与接口关系
+     *
      * @param userInterfaceInfoAddRequest
      * @param request
      * @return
@@ -57,6 +59,7 @@ public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
 
     /**
      * 获取用户接口调用剩余次数
+     *
      * @param current
      * @param pageSie
      * @param request
