@@ -73,7 +73,7 @@ public class ApiOrderServiceImpl extends ServiceImpl<ApiOrderMapper, ApiOrder>
     private OrderRabbitMq orderRabbitMq;
 
     @Override
-    public BaseResponse generateToken(Long id, HttpServletResponse response) {
+    public BaseResponse generateToken(Long id, HttpServletRequest request,HttpServletResponse response) {
         if (null == id) {
             throw new BusinessException(ErrorCode.FORBIDDEN_ERROR);
         }
@@ -82,6 +82,7 @@ public class ApiOrderServiceImpl extends ServiceImpl<ApiOrderMapper, ApiOrder>
         redisTemplate.opsForValue().set(OrderConstant.USER_ORDER_TOKEN_PREFIX + id, token, 30, TimeUnit.MINUTES);
         Cookie cookie = new Cookie(CookieConstant.ORDER_TOKEN, token);
         cookie.setPath("/");
+        cookie.setSecure(false);
         cookie.setMaxAge(CookieConstant.ORDER_TOKEN_EXPIRE_TIME);
         response.addCookie(cookie);
         return ResultUtils.success(null);

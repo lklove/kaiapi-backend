@@ -25,7 +25,7 @@ public interface ApiOrderService extends IService<ApiOrder> {
      * @param response 响应体
      * @return
      */
-    BaseResponse generateToken(Long id, HttpServletResponse response);
+    BaseResponse generateToken(Long id, HttpServletRequest request,HttpServletResponse response);
 
     /**
      * 生成订单

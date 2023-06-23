@@ -34,8 +34,8 @@ public class OrderController {
      * @return
      */
     @GetMapping("/generateToken")
-    public BaseResponse generateToken(Long id, HttpServletResponse response){
-        return apiOrderService.generateToken(id,response);
+    public BaseResponse generateToken(Long id,HttpServletRequest request, HttpServletResponse response){
+        return apiOrderService.generateToken(id,request,response);
     }
 
     @PostMapping("/generateOrder")
