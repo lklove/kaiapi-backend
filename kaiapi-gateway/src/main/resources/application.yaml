@@ -37,7 +37,7 @@ logging:
           gateway: trace
 dubbo:
   application:
-    name: dubbo-springboot-demo-provider
+    name: kaiapi-gateway-consumer
   protocol:
     name: dubbo
     port: -1
