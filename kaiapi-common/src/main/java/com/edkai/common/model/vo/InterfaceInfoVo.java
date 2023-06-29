@@ -5,13 +5,14 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.edkai.common.model.entity.InterfaceInfo;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * @author lk
  */
 @Data
-public class InterfaceInfoVo  {
+public class InterfaceInfoVo  implements Serializable {
     /**
      * 接口id
      */

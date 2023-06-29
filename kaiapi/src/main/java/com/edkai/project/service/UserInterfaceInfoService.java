@@ -67,6 +67,7 @@ public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
      */
     Page<InterfaceLeftVo> listUserInterfaceLeftNumByPage(int current, int pageSie, HttpServletRequest request);
 
-    boolean addUserInterfaceByFeign(AddUserInterfaceTo addUserInterfaceTo);
+    boolean addUserInterface(AddUserInterfaceTo addUserInterfaceTo);
+
 
 }

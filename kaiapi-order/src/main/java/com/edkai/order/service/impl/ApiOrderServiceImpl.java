@@ -15,11 +15,11 @@ import com.edkai.common.ErrorCode;
 import com.edkai.common.exception.BusinessException;
 import com.edkai.common.model.vo.InterfaceInfoVo;
 import com.edkai.common.model.vo.UserVO;
+import com.edkai.common.service.InnerInterfaceInfoService;
 import com.edkai.common.utils.ResultUtils;
 import com.edkai.order.common.OrderRabbitMq;
 import com.edkai.order.constants.CookieConstant;
 import com.edkai.order.constants.OrderConstant;
-import com.edkai.order.feign.InterfaceFeignService;
 import com.edkai.order.feign.UserFeignService;
 import com.edkai.order.model.dto.order.ApiOrderCancelDto;
 import com.edkai.order.model.dto.order.GenerateOrderRequest;
@@ -31,6 +31,7 @@ import com.edkai.order.model.vo.OrderVo;
 import com.edkai.order.service.ApiOrderService;
 import com.edkai.order.mapper.ApiOrderMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -63,8 +64,8 @@ public class ApiOrderServiceImpl extends ServiceImpl<ApiOrderMapper, ApiOrder>
     @Resource
     private UserFeignService userFeignService;
 
-    @Resource
-    private InterfaceFeignService interfaceFeignService;
+    @DubboReference
+    private InnerInterfaceInfoService innerInterfaceInfoService;
 
     @Resource
     private ApiOrderMapper apiOrderMapper;
@@ -129,8 +130,7 @@ public class ApiOrderServiceImpl extends ServiceImpl<ApiOrderMapper, ApiOrder>
         if (result == null || result == 0L) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "提交太快了，请重新提交");
         }
-        BaseResponse<InterfaceInfoVo> interfaceResponse = interfaceFeignService.feignGetInterfaceInfoById(interfaceId);
-        InterfaceInfoVo interfaceInfoVo = interfaceResponse.getData();
+        InterfaceInfoVo interfaceInfoVo = innerInterfaceInfoService.innerGetInterfaceInfoById(interfaceId);
         if (interfaceInfoVo == null){
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }

@@ -1,16 +1,16 @@
 package com.edkai.order.listen;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.edkai.common.BaseResponse;
 import com.edkai.common.constant.RabbitConstant;
 import com.edkai.common.constant.RedisConstant;
 import com.edkai.common.model.to.AddUserInterfaceTo;
-import com.edkai.order.feign.UserInterfaceFeignClient;
+import com.edkai.common.service.InnerUserInterfaceInfoService;
 import com.edkai.order.model.entity.ApiOrder;
 import com.edkai.order.model.enums.OrderStatusEnum;
 import com.edkai.order.service.ApiOrderService;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,8 +33,8 @@ public class OrderListener {
     @Resource
     private ApiOrderService apiOrderService;
 
-    @Resource
-    private UserInterfaceFeignClient userInterfaceFeignClient;
+    @DubboReference
+    private InnerUserInterfaceInfoService innerUserInterfaceInfoService;
 
     @Transactional(rollbackFor = Exception.class)
     @RabbitListener(queues = RabbitConstant.ORDER_SUCCESS_QUEUE_NAME)
@@ -61,8 +61,8 @@ public class OrderListener {
             addUserInterfaceTo.setUserId(userId);
             addUserInterfaceTo.setOrderNum(orderNum);
             addUserInterfaceTo.setInterfaceId(interfaceId);
-            BaseResponse<Boolean> response = userInterfaceFeignClient.addUserInterfaceByFeign(addUserInterfaceTo);
-            if (!response.getData()){
+            boolean b = innerUserInterfaceInfoService.addUserInterface(addUserInterfaceTo);
+            if (!b){
                 channel.basicNack(message.getMessageProperties().getDeliveryTag(),false,false);
             }
             redisTemplate.opsForValue().set(key,aliOrderSn,30, TimeUnit.MINUTES);

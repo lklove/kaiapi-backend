@@ -175,14 +175,6 @@ public class UserInterfaceInfoController {
         return ResultUtils.success(interfaceLeftVoPage);
     }
 
-    @PostMapping("/feign/add")
-    public BaseResponse<Boolean> addUserInterfaceByFeign(@RequestBody AddUserInterfaceTo addUserInterfaceTo,
-                                                         HttpServletRequest request) {
-        if (addUserInterfaceTo == null ) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        boolean result=userInterfaceInfoService.addUserInterfaceByFeign(addUserInterfaceTo);
-        return ResultUtils.success(result);
-    }
+
 
 }

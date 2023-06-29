@@ -1,6 +1,7 @@
 package com.edkai.common.service;
 
 import com.edkai.common.model.entity.InterfaceInfo;
+import com.edkai.common.model.vo.InterfaceInfoVo;
 
 /**
  * @author lk
@@ -13,4 +14,10 @@ public interface InnerInterfaceInfoService {
      * @return 接口信息。
      */
     InterfaceInfo getInterfaceInfo(Long interfaceId);
+    /**
+     * 根据id获取接口信息
+     * @param id
+     * @return
+     */
+    InterfaceInfoVo innerGetInterfaceInfoById(long id);
 }

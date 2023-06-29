@@ -90,4 +90,11 @@ public interface InterfaceInfoService extends IService<InterfaceInfo> {
      * @return 请求网关的请求地址
      */
     public String secretUrl(String url);
+
+    /**
+     * dubbo调用根据接口id获取接口信息
+     * @param id
+     * @return
+     */
+    InterfaceInfoVo innerGetInterfaceInfoById(long id);
 }

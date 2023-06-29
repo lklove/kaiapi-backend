@@ -254,7 +254,7 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
     }
 
     @Override
-    public boolean addUserInterfaceByFeign(AddUserInterfaceTo addUserInterfaceTo) {
+    public boolean addUserInterface(AddUserInterfaceTo addUserInterfaceTo) {
         if (addUserInterfaceTo == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

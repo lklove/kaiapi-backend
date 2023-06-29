@@ -286,6 +286,17 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         String[] split = url.split("/interface");
         return GATEWAY_HOST + "/interface" + split[1];
     }
+
+    @Override
+    public InterfaceInfoVo innerGetInterfaceInfoById(long id) {
+        InterfaceInfo interfaceInfo=this.getById(id);
+        if (interfaceInfo == null){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        InterfaceInfoVo interfaceInfoVo = new InterfaceInfoVo();
+        BeanUtils.copyProperties(interfaceInfo,interfaceInfoVo);
+        return interfaceInfoVo;
+    }
 }
 
 

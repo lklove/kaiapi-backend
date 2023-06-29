@@ -90,19 +90,7 @@ public class InterfaceInfoController {
         return ResultUtils.success(result);
     }
 
-    @GetMapping("/feign/get")
-    public BaseResponse<InterfaceInfoVo> feignGetInterfaceInfoById(long id,HttpServletRequest request) {
-        if (id <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        InterfaceInfo interfaceInfo=interfaceInfoService.getById(id);
-        if (interfaceInfo == null){
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
-        }
-        InterfaceInfoVo interfaceInfoVo = new InterfaceInfoVo();
-        BeanUtils.copyProperties(interfaceInfo,interfaceInfoVo);
-        return ResultUtils.success(interfaceInfoVo);
-    }
+
 
     /**
      * 根据 id 获取
