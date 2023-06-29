@@ -11,7 +11,6 @@
 * 后端技术：
     - springboot
     - MyBatis-Plus 及 MyBatis X 自动生成
-    - Feign 进行各个微服务之间的远程调用
     - Spring Security +jwt 实现单点登录
     - Rabbit Mq 消息队列
     - Spring Cloud Gateway 微服务网关
